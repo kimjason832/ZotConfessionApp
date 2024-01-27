@@ -15,16 +15,6 @@ client = discovery.build( #Service Object Creation
   static_discovery=False,
 )
 
-
-
-
-
-
-
-
-
-
-
 # Open data.json file, otherwise create it
 def save(counter, text):
     try:
@@ -36,7 +26,6 @@ def save(counter, text):
         data = {counter: text}
     with open("data.json", "w") as file:
         json.dump(data, file, indent=4)
-
 
 def create_image_with_text(text, image_width, image_height, margin, counter, font_size=50):
     # Create an image with background
@@ -112,20 +101,20 @@ def main():
     else:
         print(prob1) #if it the probability is high enough, the comment will not be added
         print("Too inapproriate!")    #this indicates that the comment would most likely break guidelines we set
-    another = input("Do you want to make another confession?\n")
+    another = input("Do you want to make another confession?\n") #take the frontend submit again button input and send to here
 
     while another.lower() != "no":
         text = input("Enter your confession:\n")
         analyze_request = {
         'comment': { 'text': text },
         'requestedAttributes': 
-        {'PROFANITY': {}, 
+        {'THREAT': {}, 
         'TOXICITY': {}}
         }
         response = client.comments().analyze(body=analyze_request).execute()
         prob2 = response["attributeScores"]["TOXICITY"]["spanScores"][0]["score"]["value"]
         
-        if prob2 < 0.7: 
+        if prob2 < 0.8765: 
             print(prob2) 
             print("leave in")
             create_image_with_text(text, image_width, image_height, margin, counter)
