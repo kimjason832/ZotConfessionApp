@@ -1,18 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Button, Image} from 'react-native';
 
-export default function Confessions({navigation}) {
-  function submit (){
-    fetch("https://fb62-169-234-101-254.ngrok-free.app").then(res => res.json()).then(response => {console.log("Hello", response)})
-    navigation.navigate('Submission');
-  }
+export default function Submission({navigation}) {
   return (
     <View style={styles.container}>
-        <Image source={require('./assets/confessyoursins-removebg-preview.png')} style={styles.shrinkedImage} />
-        <TextInput style={styles.input}>
-            
-        </TextInput>
-        <Button title="Submit" onPress={submit} color='#d1b79f'/>
+        <Text style={styles.title}>
+            Thank You!
+        </Text>
+        <Text style={styles.text}>
+            Your submission has been sucessfully submitted.
+        </Text>
+        <Button title="Submit another confession" onPress={() => navigation.navigate('Confessions')} color='#d1b79f'/>
       <StatusBar style="auto" />
     </View>
   );
@@ -34,9 +32,14 @@ const styles = StyleSheet.create({
     margin: 10,
     width: 200,
   },
+  title: {
+    color:'#000000',
+    fontSize: 50,
+    textAlign: 'center',
+  },
   text: {
     color:'#000000',
-    fontSize: 30,
+    fontSize: 15,
     textAlign: 'center',
   },
   button:{
