@@ -91,11 +91,10 @@ def main():
         prob2 = response["attributeScores"]["THREAT"]["spanScores"][0]["score"]["value"]
 
 
-        if prob1 < 0.69: #this statement checks if there is a high probability that the statement matches the attribute
-            print(prob1) #otherwise, if the probability does not meet the threshold, then the comment should be added to our database.
-            print(prob2)
-            print("leave in")
-
+        if prob1 < 0.8765: #this statement checks if there is a high probability that the statement matches the attribute
+            print("Toxicity:", prob1) #if it the probability is high enough, the comment will not be added
+            print("Threat:", prob2)
+                
 
         # Image dimensions and margin
             image_width = 800
@@ -105,65 +104,18 @@ def main():
             create_image_with_text(userInput, image_width, image_height, margin, counter)
             save(counter, userInput)
             counter += 1
-        else:
-            print(prob1)
-            print(prob2) #if it the probability is high enough, the comment will not be added
-            print("Too inapproriate!")    #this indicates that the comment would most likely break guidelines we set
-    file.close()
-    # file = open("confessions.csv")
 
-    # csv_reader = csv.reader(csvfile)
-    # for row in csv_reader:
-    #     userInput = row[0]
-    #     analyze_request = {
-    #     'comment': { 'text': userInput },
-    #     'requestedAttributes': 
-    #     {'THREAT': {}, 
-    #     'TOXICITY': {}}
-    #     }
-    #     response = client.comments().analyze(body=analyze_request).execute()
-    #     prob1 = response["attributeScores"]["TOXICITY"]["spanScores"][0]["score"]["value"]
-    #     prob2 = response["attributeScores"]["THREAT"]["spanScores"][0]["score"]["value"]
-        
-    #     if prob1 < 0.69: 
-    #         print(prob1)
-    #         print(prob2) 
-    #         print("leave in")
-    #         create_image_with_text(userInput, image_width, image_height, margin, counter)
-    #         save(counter, userInput)
-    #         counter += 1  
-    #     else:
-    #         print(prob1)
-    #         print(prob2) 
-    #         print("Too inapproriate!")  
+        else:
+            print("Toxicity:", prob1) #otherwise, if the probability does not meet the threshold, then the comment should be added to our database.
+            print("Threat:", prob2)
+            print("Too Inapproriate!")    
+            
+            
+    file.close()
+
             
 
 
 if __name__ == "__main__":
     main()
 
-    # file = 'confessions.csv'
-    # with open(file, 'r') as csvfile:
-    #     csv_reader = csv.reader(csvfile)
-    #     for row in csv_reader:
-    #         userInput = row[0]        
-    #         analyze_request = {
-    #         'comment': { 'text': userInput },
-    #         'requestedAttributes': 
-    #         {'THREAT': {}, 
-    #         'TOXICITY': {}}
-    #         }
-
-    #         response = client.comments().analyze(body=analyze_request).execute()
-    #         prob1 = response["attributeScores"]["TOXICITY"]["spanScores"][0]["score"]["value"]
-    #         prob2 = response["attributeScores"]["THREAT"]["spanScores"][0]["score"]["value"]
-
-    #         if prob1 < 0.7: #this statement checks if there is a high probability that the statement matches the attribute
-    #             print(prob1) #if it the probability is high enough, the comment will not be added
-    #             print(prob2)
-    #             print("leave in")    #this indicates that the comment would most likely break guidelines we set
-    #         else:
-    #             print(prob1) #otherwise, if the probability does not meet the threshold, then the comment should be added to our database.
-    #             print(prob2)
-    #             print("Too Inapproriate!")
-    #         print(json.dumps(response, indent=2))
