@@ -1,9 +1,11 @@
 from googleapiclient import discovery
-
 from PIL import Image, ImageDraw, ImageFont
+from flask import Flask
+from flask import jsonify
 import textwrap
 import sys
 import json
+import csv
 
 API_KEY = 'AIzaSyAUmBLtiJOelw6Dh3wdH3D6pp1-_Naz1R4'
 
@@ -71,62 +73,97 @@ def create_image_with_text(text, image_width, image_height, margin, counter, fon
 
 
 def main():
-    text = input("Enter your confession:\n")
     counter = 1
-
-    analyze_request = {
-    'comment': { 'text': text },
-    'requestedAttributes': 
-    {'PROFANITY': {}, 
-    'TOXICITY': {}}
-    }
-
-    response = client.comments().analyze(body=analyze_request).execute()
-    prob1 = response["attributeScores"]["TOXICITY"]["spanScores"][0]["score"]["value"]
+    file = open('confessions.csv', 'r')
     
-
-    if prob1 < 0.7: #this statement checks if there is a high probability that the statement matches the attribute
-        print(prob1) #otherwise, if the probability does not meet the threshold, then the comment should be added to our database.
-        print("leave in")
-    #print(json.dumps(response, indent=2))
-
-    # Image dimensions and margin
-        image_width = 800
-        image_height = 600
-        margin = 40
-
-        create_image_with_text(text, image_width, image_height, margin, counter)
-        save(counter, text)
-        counter += 1
-    else:
-        print(prob1) #if it the probability is high enough, the comment will not be added
-        print("Too inapproriate!")    #this indicates that the comment would most likely break guidelines we set
-    another = input("Do you want to make another confession?\n") #take the frontend submit again button input and send to here
-
-    while another.lower() != "no":
-        text = input("Enter your confession:\n")
+    csv_reader = csv.reader(file)
+    for row in csv_reader:
+        userInput = row[0]
         analyze_request = {
-        'comment': { 'text': text },
+        'comment': { 'text': userInput },
         'requestedAttributes': 
         {'THREAT': {}, 
-        'TOXICITY': {}}
+        'SEVERE_TOXICITY': {}}
         }
+
         response = client.comments().analyze(body=analyze_request).execute()
-        prob2 = response["attributeScores"]["TOXICITY"]["spanScores"][0]["score"]["value"]
-        
-        if prob2 < 0.8765: 
-            print(prob2) 
+        prob1 = response["attributeScores"]["SEVERE_TOXICITY"]["spanScores"][0]["score"]["value"]
+        prob2 = response["attributeScores"]["THREAT"]["spanScores"][0]["score"]["value"]
+
+
+        if prob1 < 0.69: #this statement checks if there is a high probability that the statement matches the attribute
+            print(prob1) #otherwise, if the probability does not meet the threshold, then the comment should be added to our database.
+            print(prob2)
             print("leave in")
-            create_image_with_text(text, image_width, image_height, margin, counter)
-            save(counter, text)
-            counter += 1  
+
+
+        # Image dimensions and margin
+            image_width = 800
+            image_height = 600
+            margin = 40
+
+            create_image_with_text(userInput, image_width, image_height, margin, counter)
+            save(counter, userInput)
+            counter += 1
         else:
-            print(prob2) 
-            print("Too inapproriate!")  
-        another = input("Do you want to make another confession?\n")
-    else:
-        sys.exit()
+            print(prob1)
+            print(prob2) #if it the probability is high enough, the comment will not be added
+            print("Too inapproriate!")    #this indicates that the comment would most likely break guidelines we set
+    file.close()
+    # file = open("confessions.csv")
+
+    # csv_reader = csv.reader(csvfile)
+    # for row in csv_reader:
+    #     userInput = row[0]
+    #     analyze_request = {
+    #     'comment': { 'text': userInput },
+    #     'requestedAttributes': 
+    #     {'THREAT': {}, 
+    #     'TOXICITY': {}}
+    #     }
+    #     response = client.comments().analyze(body=analyze_request).execute()
+    #     prob1 = response["attributeScores"]["TOXICITY"]["spanScores"][0]["score"]["value"]
+    #     prob2 = response["attributeScores"]["THREAT"]["spanScores"][0]["score"]["value"]
+        
+    #     if prob1 < 0.69: 
+    #         print(prob1)
+    #         print(prob2) 
+    #         print("leave in")
+    #         create_image_with_text(userInput, image_width, image_height, margin, counter)
+    #         save(counter, userInput)
+    #         counter += 1  
+    #     else:
+    #         print(prob1)
+    #         print(prob2) 
+    #         print("Too inapproriate!")  
+            
 
 
 if __name__ == "__main__":
     main()
+
+    # file = 'confessions.csv'
+    # with open(file, 'r') as csvfile:
+    #     csv_reader = csv.reader(csvfile)
+    #     for row in csv_reader:
+    #         userInput = row[0]        
+    #         analyze_request = {
+    #         'comment': { 'text': userInput },
+    #         'requestedAttributes': 
+    #         {'THREAT': {}, 
+    #         'TOXICITY': {}}
+    #         }
+
+    #         response = client.comments().analyze(body=analyze_request).execute()
+    #         prob1 = response["attributeScores"]["TOXICITY"]["spanScores"][0]["score"]["value"]
+    #         prob2 = response["attributeScores"]["THREAT"]["spanScores"][0]["score"]["value"]
+
+    #         if prob1 < 0.7: #this statement checks if there is a high probability that the statement matches the attribute
+    #             print(prob1) #if it the probability is high enough, the comment will not be added
+    #             print(prob2)
+    #             print("leave in")    #this indicates that the comment would most likely break guidelines we set
+    #         else:
+    #             print(prob1) #otherwise, if the probability does not meet the threshold, then the comment should be added to our database.
+    #             print(prob2)
+    #             print("Too Inapproriate!")
+    #         print(json.dumps(response, indent=2))
