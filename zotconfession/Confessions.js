@@ -1,18 +1,42 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Button, Image} from 'react-native';
+import React, {useState} from 'react';
 
 export default function Confessions({navigation}) {
   function submit (){
-    fetch("https://fb62-169-234-101-254.ngrok-free.app").then(res => res.json()).then(response => {console.log("Hello", response)})
+    fetch("https://4364-169-234-101-254.ngrok-free.app", {
+      method: "POST",
+      headers: {
+        'ngrok-skip-browser-warning': 1,
+        "Content-Type": "application/json",
+
+      },
+      body: JSON.stringify({
+        "name": inputText
+      })
+    }).then(res => res.json()).then(response  => {console.log("Hello", response)})
     navigation.navigate('Submission');
+
+    setInputText('');
   }
+
+  const [inputText, setInputText] = useState('');
   return (
     <View style={styles.container}>
+      <View style={styles.topBox}>
         <Image source={require('./assets/confessyoursins-removebg-preview.png')} style={styles.shrinkedImage} />
-        <TextInput style={styles.input}>
-            
-        </TextInput>
+      </View>
+      <View style={styles.middleBox}>
+        <TextInput 
+          style={styles.input} 
+          placeholder="Enter text here"
+          onChangeText = {inputText => setInputText(inputText)}
+          value = {inputText}
+        />
+      </View>
+      <View style={styles.bottomBox}>
         <Button title="Submit" onPress={submit} color='#d1b79f'/>
+      </View>
       <StatusBar style="auto" />
     </View>
   );
@@ -21,18 +45,32 @@ export default function Confessions({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 60,
-    color: 'white',
     backgroundColor: '#f5edd0',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+  },
+  topBox: {
+    flex: 1,
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    paddingBottom: 0,
+  },
+  middleBox: {
+    flex: 3,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  bottomBox: {
+    flex: 2,
     justifyContent: 'center',
+    paddingBottom: 30,
   },
   input: {
     borderWidth: 1,
     borderColor: '#777',
     padding: 8,
-    margin: 10,
-    width: 200,
+    width: '80%',
+    height: 350,
   },
   text: {
     color:'#000000',
