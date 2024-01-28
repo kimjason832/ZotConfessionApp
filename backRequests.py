@@ -86,18 +86,15 @@ def save(counter, text):
     with open("data.json", "w") as file:
         json.dump(data, file, indent=4)
 
+
 @app.route('/', methods = ["GET", "POST"]) #get request is for the actual website, post request is for inputs
 def getInfo():
-    counter = 0
     if request.method == "GET":
         return jsonify({'Hello' : 'World'})
     elif request.method == "POST":  
-        print("hello")
-        counter += 1
         info = request.get_json()
         print(update_csv())
-        print(info)
-
+        counter = 1
         userInput = info['name']      
         analyze_request = {
           'comment': { 'text': userInput },
@@ -120,14 +117,13 @@ def getInfo():
 
             create_image_with_text(userInput, image_width, image_height, margin, counter)
             save(counter, userInput)
-                
         else:
             print("Toxicity:" , prob1) #otherwise, if the probability does not meet the threshold, then the comment should be added to our database.
             print("Threat:" , prob2)
             print("Too Inapproriate!")
         print(json.dumps(response, indent=2))
 
-
+        
         return info
 
 
