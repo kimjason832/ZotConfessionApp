@@ -4,7 +4,7 @@ import React, {useState} from 'react';
 
 export default function Confessions({navigation}) {
   function submit (){
-    fetch("https://4364-169-234-101-254.ngrok-free.app", {
+    fetch("https://2ebc-169-234-101-254.ngrok-free.app", {
       method: "POST",
       headers: {
         'ngrok-skip-browser-warning': 1,
