@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Button, Image} from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Image, ScrollView, Keyboard } from 'react-native';
 import React, {useState} from 'react';
 
 export default function Confessions({navigation}) {
@@ -22,6 +22,10 @@ export default function Confessions({navigation}) {
 
   const [inputText, setInputText] = useState('');
   return (
+    <ScrollView
+    contentContainerStyle={styles.container}
+    keyboardShouldPersistTaps = 'handled'
+    >    
     <View style={styles.container}>
       <View style={styles.topBox}>
         <Image source={require('./assets/confessyoursins-removebg-preview.png')} style={styles.shrinkedImage} />
@@ -31,6 +35,8 @@ export default function Confessions({navigation}) {
           style={styles.input} 
           placeholder="Enter text here"
           onChangeText = {inputText => setInputText(inputText)}
+          multiline={true}
+          numberOfLines={1}
           value = {inputText}
         />
       </View>
@@ -39,6 +45,7 @@ export default function Confessions({navigation}) {
       </View>
       <StatusBar style="auto" />
     </View>
+    </ScrollView>
   );
 }
 
